@@ -8,7 +8,7 @@ import re
 # Code refactor
 import logging  # Built-in Python library
 
-def requestHtml(url):
+def request_html(url):
     headers = { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \
                                AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
                 "Upgrade-Insecure-Requests": "1",
@@ -23,7 +23,7 @@ def requestHtml(url):
 
 def scrape_fox_links():
     """
-    This function takes in the URL from the Fox news page.
+    This function takes in the URL from the Fox News page.
     It scrapes this page and returns a dataframe with information on the day's news teasers.
 
     Required arguments:
@@ -33,10 +33,10 @@ def scrape_fox_links():
     url = "https://www.foxnews.com/politics"
 
     # Request the page's html script
-    soup = requestHtml(url)
+    soup = request_html(url)
 
     # add links to list
-    newLinks = []
+    new_links = []
 
     # find all a tags and loop through them
     for link in soup.find_all('a'):
@@ -50,29 +50,30 @@ def scrape_fox_links():
             
         # only add links to politics articles
         if href.startswith('/politics/'):
-            newLinks.append('https://www.foxnews.com' + href)
+            new_links.append('https://www.foxnews.com' + href)
         else:
             continue
 
     # remove duplicate links
-    uniqueLinks = list(dict.fromkeys(newLinks))
+    unique_links = list(dict.fromkeys(new_links))
 
     # remove newsletter links
-    articleLinks = []
-    for link in uniqueLinks:
+    article_links = []
+    for link in unique_links:
         if link.find('newsletter') == -1:
-            articleLinks.append(link)
+            article_links.append(link)
     
     # create name for CSV
     today = date.today()
-    csvName = today.strftime("%Y-%m-%d") + '-fox-links.csv'
+    csv_name = today.strftime("%Y-%m-%d") + '-fox-links.csv'
 
     # save to CSV
-    df = pd.DataFrame(articleLinks, columns=['url'])
-    df.to_csv(csvName, index=False)
+    df = pd.DataFrame(article_links, columns=['url'])
+    df.to_csv(csv_name, index=False)
 
-def parseFoxPage(soup):
+def parse_fox_page(soup):
     # parse article headline
+    headline = ""
     h1 = soup.find("h1")
     if h1:
         headline = h1.get_text(strip=True) 
@@ -87,10 +88,10 @@ def parseFoxPage(soup):
         print("No h2 tag")
 
     # parse article text
-    articleBody = soup.find("div", class_="article-body").find_all("p", recursive=False)
+    article_body = soup.find("div", class_="article-body").find_all("p", recursive=False)
 
     content = ""
-    for paragraph in articleBody:
+    for paragraph in article_body:
         
         # Break if article starts talking about other news at end of article. 
         if paragraph.get_text(strip=True) == "In other news:":
@@ -103,7 +104,7 @@ def parseFoxPage(soup):
     
     return headline, content
 
-def removeAllCaps(string):
+def remove_all_caps(string):
     return re.sub(r'\b[A-Z]{2}\w*+\b', '', string)
 
 def scrape_fox_pages():
@@ -114,8 +115,8 @@ def scrape_fox_pages():
 
     # create df of links
     today = date.today()
-    csvName = today.strftime("%Y-%m-%d") + '-fox-links.csv'
-    links = pd.read_csv(csvName)
+    csv_name = today.strftime("%Y-%m-%d") + '-fox-links.csv'
+    links = pd.read_csv(csv_name)
 
     # create a new column called domain from the link
     links["domain"] = ""
@@ -132,9 +133,9 @@ def scrape_fox_pages():
         url = links.at[i, "url"]
         
         # make HTTP request and get HTML
-        soup = requestHtml(url)
+        soup = request_html(url)
 
-        # if there was an error in requestHtml, continue to next 
+        # if there was an error in request_html, continue to next
         if soup == "error":
             print("Error with HTTP request", url)
             continue
@@ -147,7 +148,7 @@ def scrape_fox_pages():
         
         # depending on the domain, parse the HTML to obtain the headline and content
         if domain == "foxnews":
-            headline, content = parseFoxPage(soup)
+            headline, content = parse_fox_page(soup)
             company = "Fox"
         elif domain == "cnn":
             headline, content = parseCnnPage(soup)
@@ -161,18 +162,18 @@ def scrape_fox_pages():
         articles.append(content)
 
     # create dictionary of equal length lists
-    rawData = {"company": companies, "headline": headlines, "article": articles}
+    raw_data = {"company": companies, "headline": headlines, "article": articles}
 
     # check to make sure dictionary of equal-length lists
-    if len(rawData["company"]) == len(rawData["headline"]) & len(rawData["headline"]) == len(rawData["article"]):
-        data = pd.DataFrame(rawData)
+    if len(raw_data["company"]) == len(raw_data["headline"]) & len(raw_data["headline"]) == len(raw_data["article"]):
+        data = pd.DataFrame(raw_data)
 
-    data.loc[:,"articleCleaned"] = data["article"].apply(removeAllCaps)
+    data.loc[:,"articleCleaned"] = data["article"].apply(remove_all_caps)
     data.loc[:,"article"] = data["articleCleaned"]
     data.drop("articleCleaned", axis=1, inplace=True)
     
-    csvDataName = today.strftime("%Y-%m-%d") + '-fox-data.csv'
-    data.to_csv(csvDataName, index=False)
+    csv_data_name = today.strftime("%Y-%m-%d") + '-fox-data.csv'
+    data.to_csv(csv_data_name, index=False)
 
 def main():
     """
