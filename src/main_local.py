@@ -25,9 +25,6 @@ def scrape_fox_links():
     """
     This function takes in the URL from the Fox News page.
     It scrapes this page and returns a dataframe with information on the day's news teasers.
-
-    Required arguments:
-    - URL: string, the SRF website to be scraped
     """
 
     url = "https://www.foxnews.com/politics"
@@ -70,6 +67,45 @@ def scrape_fox_links():
     # save to CSV
     df = pd.DataFrame(article_links, columns=['url'])
     df.to_csv(csv_name, index=False)
+
+def scrape_cnn_links():
+    url = "https://www.cnn.com/politics"
+
+    # make the HTTP request
+    soup = request_html(url)
+
+    today = date.today()
+    formatted_date = today.strftime("%Y/%m/%d")
+
+    new_links = []
+
+    # find all a tags and loop through them
+    for link in soup.find_all('a'):
+
+        # get the href attribute of a tag
+        href = link.get('href')
+
+        # check href is a string, sometimes a tag has no href
+        if isinstance(href, str):
+            # only add today's articles
+            if href.startswith('/' + formatted_date):
+                new_links.append('https://www.cnn.com' + href)
+        else:
+            continue
+
+    # remove duplicate links
+    unique_links = list(dict.fromkeys(new_links))
+
+    # remove video links
+    article_links = []
+    for link in unique_links:
+        if link.find('video') == -1:
+            article_links.append(link)
+
+    csv_link_name = today.strftime("%Y-%m-%d") + '-cnn-links.csv'
+
+    df = pd.DataFrame(article_links, columns=['url'])
+    df.to_csv(csv_link_name, index=False)
 
 def parse_fox_page(soup):
     # parse article headline
@@ -175,6 +211,9 @@ def scrape_fox_pages():
     csv_data_name = today.strftime("%Y-%m-%d") + '-fox-data.csv'
     data.to_csv(csv_data_name, index=False)
 
+
+
+
 def main():
     """
     This function combines the scraping and saving functions.
@@ -183,13 +222,17 @@ def main():
     # Start logging
     logger = logging.getLogger(__name__)
 
-    # Scrape the links
-    scrape_fox_links()
-    logger.info('Links retrieved')
+    # Scrape Fox links
+    # scrape_fox_links()
+    # logger.info('Fox Links retrieved')
 
-    # Scrape the pages
-    scrape_fox_pages()
-    logger.info('Data retrieved')
+    # Scrape Fox pages
+    # scrape_fox_pages()
+    # logger.info('Fox Data retrieved')
+
+    # Scrape CNN links
+    # scrape_cnn_links()
+    # logger.info('Links retrieved')
 
 
 
