@@ -6,6 +6,8 @@ from datetime import date  # Built-in Python library
 import numpy as np
 import re
 
+import scrape_links
+
 # Code refactor
 import logging  # Built-in Python library
 
@@ -22,91 +24,6 @@ def request_html(url):
 
     return soup
 
-def scrape_fox_links():
-    """
-    This function takes in the URL from the Fox News page.
-    It scrapes this page and returns a dataframe with information on the day's news teasers.
-    """
-
-    url = "https://www.foxnews.com/politics"
-
-    # Request the page's html script
-    soup = request_html(url)
-
-    # add links to list
-    new_links = []
-
-    # find all a tags and loop through them
-    for link in soup.find_all('a'):
-
-        # get the href attribute of a tag
-        href = link.get('href')
-        
-        # check href is a string, sometimes a tag has no href
-        if href is None:
-            continue
-            
-        # only add links to politics articles
-        if href.startswith('/politics/'):
-            new_links.append('https://www.foxnews.com' + href)
-        else:
-            continue
-
-    # remove duplicate links
-    unique_links = list(dict.fromkeys(new_links))
-
-    # remove newsletter links
-    article_links = []
-    for link in unique_links:
-        if link.find('newsletter') == -1:
-            article_links.append(link)
-    
-    # create name for CSV
-    today = date.today()
-    csv_name = today.strftime("%Y-%m-%d") + '-fox-links.csv'
-
-    # save to CSV
-    df = pd.DataFrame(article_links, columns=['url'])
-    df.to_csv(csv_name, index=False)
-
-def scrape_cnn_links():
-    url = "https://www.cnn.com/politics"
-
-    # make the HTTP request
-    soup = request_html(url)
-
-    today = date.today()
-    formatted_date = today.strftime("%Y/%m/%d")
-
-    new_links = []
-
-    # find all a tags and loop through them
-    for link in soup.find_all('a'):
-
-        # get the href attribute of a tag
-        href = link.get('href')
-
-        # check href is a string, sometimes a tag has no href
-        if isinstance(href, str):
-            # only add today's articles
-            if href.startswith('/' + formatted_date):
-                new_links.append('https://www.cnn.com' + href)
-        else:
-            continue
-
-    # remove duplicate links
-    unique_links = list(dict.fromkeys(new_links))
-
-    # remove video links
-    article_links = []
-    for link in unique_links:
-        if link.find('video') == -1:
-            article_links.append(link)
-
-    csv_link_name = today.strftime("%Y-%m-%d") + '-cnn-links.csv'
-
-    df = pd.DataFrame(article_links, columns=['url'])
-    df.to_csv(csv_link_name, index=False)
 
 def parse_fox_page(soup):
     # parse article headline
@@ -304,7 +221,7 @@ def main():
     logger = logging.getLogger(__name__)
 
     # Scrape Fox links
-    # scrape_fox_links()
+    # scrape_links.scrape_fox_links()
     # logger.info('Fox Links retrieved')
 
     # Scrape Fox pages
@@ -312,12 +229,12 @@ def main():
     # logger.info('Fox Data retrieved')
 
     # Scrape CNN links
-    # scrape_cnn_links()
-    # logger.info('Links retrieved')
+    scrape_links.scrape_cnn_links()
+    logger.info('CNN Links retrieved')
 
     # Scrape CNN pages
-    scrape_cnn_pages()
-    logger.info('CNN Data retrieved')
+    # scrape_cnn_pages()
+    # logger.info('CNN Data retrieved')
 
 
 
