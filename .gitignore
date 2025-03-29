@@ -1,1 +1,9 @@
+# ignore pycharm config
 .idea/vcs.xml
+
+# ignore data files
+data/*
+
+# ignore pycache files
+src/__pycache__/matcher.cpython-312.pyc
+src/__pycache__/scrape_articles.cpython-312.pyc
