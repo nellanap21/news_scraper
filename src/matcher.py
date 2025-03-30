@@ -80,7 +80,6 @@ def find_matches():
 
     # initialize list to hold matches
     jac_matches = []
-    logging.info(jac_matches)
 
     # iterate through every pair of articles and calculate score
     for i in range(len(fox_headlines)):
@@ -104,8 +103,6 @@ def find_matches():
             # How to determine best cutoff value
             if similarity > 0.25:
                 cos_matches.append(tuple([i, j]))
-
-    logging.info(cos_matches)
 
     # First find unique tuples from both Jaccard and Cosine similarity
     unique_set = set(jac_matches + cos_matches)
