@@ -1,14 +1,11 @@
 # Retrieving & Wrangling Data
-import requests  # Version 2.27.1
-from bs4 import BeautifulSoup  # Version 4.11.1
-import pandas as pd  # Version 1.4.2
 from datetime import date  # Built-in Python library
-import numpy as np
-import re
 
 import scrape_links
 import scrape_articles
 import matcher
+# import summarizer
+# import cleaner
 
 # Code refactor
 import logging  # Built-in Python library
@@ -45,6 +42,13 @@ def main():
     else:
         logger.info('Matching articles found')
 
+    # Generate scripts
+    # scripts = summarizer.generate_summary()
+    # if scripts is None:
+    #     logger.info('No scripts generated')
+
+
+    # Clean scripts
 
 
 if __name__ == '__main__':

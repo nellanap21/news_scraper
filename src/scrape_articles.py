@@ -1,10 +1,9 @@
-import requests  # Version 2.27.1
-from bs4 import BeautifulSoup  # Version 4.11.1
-import pandas as pd  # Version 1.4.2
-from datetime import date  # Built-in Python library
-import numpy as np
-import re
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+from datetime import date
 from pathlib import Path
+import re
 
 
 def request_html(url):

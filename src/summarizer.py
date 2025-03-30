@@ -155,8 +155,8 @@ def summarize_articles():
     summaries["script"] = scripts
 
     # create file path
-    scripts_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/scripts.csv')
-    scripts_filepath.parent.mkdir(parents=True, exist_ok=True)
+    summaries_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/summaries.csv')
+    summaries_filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # stores CSV
-    summaries.to_csv(path_or_buf=scripts_filepath, index=False)
+    summaries.to_csv(path_or_buf=summaries_filepath, index=False)

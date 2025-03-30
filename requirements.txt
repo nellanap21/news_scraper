@@ -1,0 +1,10 @@
+# Python 3.13.2
+
+# retreiving and wrangling data
+requests~=2.32.3
+beautifulsoup4~=4.12.3
+pandas~=2.2.3
+numpy~=2.2.4
+scikit-learn~=1.6.1
+
+# saving the data

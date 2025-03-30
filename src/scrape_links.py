@@ -1,10 +1,8 @@
-import requests  # Version 2.27.1
-from bs4 import BeautifulSoup  # Version 4.11.1
-import pandas as pd  # Version 1.4.2
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
 from datetime import date  # Built-in Python library
-from pathlib import Path
-import numpy as np
-import re
+from pathlib import Path # Built-in Python library
 
 def request_html(url):
     headers = { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \

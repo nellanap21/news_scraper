@@ -1,5 +1,4 @@
 # import libraries
-# from datetime import date
 import datetime
 import pandas as pd
 import numpy as np
@@ -60,10 +59,11 @@ def find_matches():
     logger = logging.getLogger(__name__)
 
     # create filepaths with data
-    # today = date.today()
+    today = datetime.date.today()
 
-    # for testing purposes
-    today = datetime.datetime(2025, 3, 28)
+    # for testing purposes find articles from specific date
+    # today = datetime.datetime(2025, 3, 28)
+
     cnn_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/cnn-data.csv')
     fox_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/fox-data.csv')
 
