@@ -18,7 +18,7 @@ def request_html(url):
     return soup
 
 
-def scrape_fox_links():
+def scrape_fox_links(s3_folder_path):
     """
     This function takes in the URL from the Fox News page.
     It scrapes this page and returns a dataframe with information on the day's news teasers.
@@ -59,7 +59,7 @@ def scrape_fox_links():
 
     # create filepath for CSV
     today = date.today()
-    filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/fox-links.csv')
+    filepath = Path(s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-links.csv')
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # save to CSV
@@ -67,7 +67,7 @@ def scrape_fox_links():
     df.to_csv(path_or_buf=filepath, index=False)
 
 
-def scrape_cnn_links():
+def scrape_cnn_links(s3_folder_path):
     url = "https://www.cnn.com/politics"
 
     # make the HTTP request
@@ -103,7 +103,7 @@ def scrape_cnn_links():
 
     # create filepath for CSV
     today = date.today()
-    filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/cnn-links.csv')
+    filepath = Path(s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-links.csv')
     filepath.parent.mkdir(parents=True, exist_ok=True)
 
     # save to CSV

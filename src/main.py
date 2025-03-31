@@ -11,7 +11,7 @@ import matcher
 import logging  # Built-in Python library
 
 
-def main():
+def main(s3_folder_path):
     """
     This function combines the scraping and saving functions.
     It logs the progress and prints out info messages.
@@ -20,8 +20,8 @@ def main():
     logger = logging.getLogger(__name__)
 
     # Scrape Fox links
-    # scrape_links.scrape_fox_links()
-    # logger.info('Fox Links retrieved')
+    scrape_links.scrape_fox_links(s3_folder_path)
+    logger.info('Fox Links retrieved')
 
     # Scrape Fox articles
     # scrape_articles.scrape_fox_articles()
@@ -53,10 +53,11 @@ def main():
 
 if __name__ == '__main__':
     # Define the required arguments
+    s3_data_folder = "s3://news/data/"
 
     # Configure the logging
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     # Run the main function
-    main()
+    main(s3_folder_path=s3_data_folder)
