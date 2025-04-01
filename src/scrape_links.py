@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import date  # Built-in Python library
 from pathlib import Path # Built-in Python library
+import s3fs
 
 def request_html(url):
     headers = { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \
@@ -59,13 +60,14 @@ def scrape_fox_links(s3_folder_path):
 
     # create filepath for CSV
     today = date.today()
-    filepath = Path(s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-links.csv')
-    filepath.parent.mkdir(parents=True, exist_ok=True)
+    filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-links.csv'
 
-    # save to CSV
+    # create data frame
     df = pd.DataFrame(article_links, columns=['url'])
-    df.to_csv(path_or_buf=filepath, index=False)
 
+    # save to S3
+    s3 = s3fs.S3FileSystem(profile='admin')
+    df.to_csv(path_or_buf=filepath, index=False)
 
 def scrape_cnn_links(s3_folder_path):
     url = "https://www.cnn.com/politics"
@@ -103,9 +105,10 @@ def scrape_cnn_links(s3_folder_path):
 
     # create filepath for CSV
     today = date.today()
-    filepath = Path(s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-links.csv')
-    filepath.parent.mkdir(parents=True, exist_ok=True)
+    filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-links.csv'
 
-    # save to CSV
+    # create data frame
     df = pd.DataFrame(article_links, columns=['url'])
+
+    # save to S3
     df.to_csv(path_or_buf=filepath, index=False)

@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import date
 from pathlib import Path
 import re
-
+import s3fs
 
 def request_html(url):
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \
@@ -58,7 +58,7 @@ def remove_all_caps(string):
     return re.sub(r'\b[A-Z]{2}\w*+\b', '', string)
 
 
-def scrape_fox_articles():
+def scrape_fox_articles(s3_folder_path):
     # create lists of equal length to hold data
     companies = []
     headlines = []
@@ -66,7 +66,7 @@ def scrape_fox_articles():
 
     # create df of links
     today = date.today()
-    links_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/fox-links.csv')
+    links_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-links.csv'
     links = pd.read_csv(filepath_or_buffer=links_filepath)
 
     # create a new column called domain from the link
@@ -124,8 +124,7 @@ def scrape_fox_articles():
     data.drop("articleCleaned", axis=1, inplace=True)
 
     # create filepath
-    data_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/fox-data.csv')
-    data_filepath.parent.mkdir(parents=True, exist_ok=True)
+    data_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-data.csv'
 
     # save to CSV
     data.to_csv(path_or_buf=data_filepath, index=False)
@@ -152,7 +151,7 @@ def parse_cnn_page(soup):
     return headline, content
 
 
-def scrape_cnn_articles():
+def scrape_cnn_articles(s3_folder_path):
     # create lists of equal length to hold data
     companies = []
     headlines = []
@@ -160,7 +159,7 @@ def scrape_cnn_articles():
 
     # create df of links
     today = date.today()
-    links_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/cnn-links.csv')
+    links_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-links.csv'
     links = pd.read_csv(filepath_or_buffer=links_filepath)
 
     # create a new column called company from the link
@@ -210,8 +209,8 @@ def scrape_cnn_articles():
     # create dataframe
     data = pd.DataFrame(raw_data)
 
-    # create file path and store CSV
-    data_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/cnn-data.csv')
-    data_filepath.parent.mkdir(parents=True, exist_ok=True)
+    # create file path
+    data_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-data.csv'
 
+    # store on S3
     data.to_csv(path_or_buf=data_filepath, index=False)

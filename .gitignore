@@ -10,3 +10,7 @@ src/__pycache__/scrape_articles.cpython-312.pyc
 
 # environmental variables
 .env
+
+# python cache
+src/__pycache__/
+__pycache__/
