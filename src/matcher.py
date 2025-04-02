@@ -112,8 +112,8 @@ def find_matches(s3_folder_path):
     # convert back to list
     unique_matches = list(unique_set)
 
-    # unique_matches.append(tuple([0, 0]))
-    unique_matches.append((2,3))
+    unique_matches.remove((12,16))
+    unique_matches.append((4,0))
     logger.info(unique_matches)
 
     # check if no matches found

@@ -19,10 +19,11 @@ def tokenize(corpus):
 
     # TODO: consider not removing quotations
     # remove quotations with regex
-    corpus_without_quotes = re.sub(r'"[^"]+"', '', corpus)
+    # corpus_without_quotes = re.sub(r'"[^"]+"', '', corpus)
 
     # tokenize the corpus, creating a list of all words in the corpus
-    tokens = sent_tokenize(corpus_without_quotes)
+    # tokens = sent_tokenize(corpus_without_quotes)
+    tokens = sent_tokenize(corpus)
 
     return tokens
 

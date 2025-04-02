@@ -4,7 +4,7 @@ import s3fs
 import scrape_links
 import scrape_articles
 import matcher
-# import summarizer
+import summarizer
 import cleaner
 import voice_generator
 
