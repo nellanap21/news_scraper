@@ -55,7 +55,7 @@ def cosine_sim(text1, text2):
     tfidf_matrix = vectorizer.fit_transform([text1, text2])
     return cosine_similarity(tfidf_matrix[0], tfidf_matrix[1])[0][0]
 
-def find_matches():
+def find_matches(s3_folder_path):
     logger = logging.getLogger(__name__)
 
     # create filepaths with data
@@ -64,8 +64,8 @@ def find_matches():
     # for testing purposes find articles from specific date
     # today = datetime.datetime(2025, 3, 28)
 
-    cnn_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/cnn-data.csv')
-    fox_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/fox-data.csv')
+    cnn_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-data.csv'
+    fox_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-data.csv'
 
     # load into data frames
     cnn = pd.read_csv(filepath_or_buffer=cnn_filepath)
@@ -90,6 +90,7 @@ def find_matches():
             if similarity > 0.15:
                 jac_matches.append(tuple([i, j]))
 
+    logger.info(jac_matches)
     # Create a matrix to hold cosine similarity scores
     cos_matrix = pd.DataFrame(np.empty((len(fox_headlines), len(cnn_headlines))))
 
@@ -104,11 +105,16 @@ def find_matches():
             if similarity > 0.25:
                 cos_matches.append(tuple([i, j]))
 
+    logger.info(cos_matches)
     # First find unique tuples from both Jaccard and Cosine similarity
     unique_set = set(jac_matches + cos_matches)
 
     # convert back to list
     unique_matches = list(unique_set)
+
+    # unique_matches.append(tuple([0, 0]))
+    unique_matches.append((2,3))
+    logger.info(unique_matches)
 
     # check if no matches found
     if len(unique_matches) == 0:
@@ -135,8 +141,7 @@ def find_matches():
     articles = pd.DataFrame(raw_data)
 
     # create file path
-    articles_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/articles.csv')
-    articles_filepath.parent.mkdir(parents=True, exist_ok=True)
+    articles_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/articles.csv'
 
     # stores CSV
     articles.to_csv(path_or_buf=articles_filepath, index=False)

@@ -9,3 +9,15 @@ scikit-learn~=1.6.1
 
 # saving the data
 s3fs~=2024.12.0
+
+# natural language processing
+nltk~=3.9.1
+
+# open AI API
+openai~=1.60.1
+
+# store keys in env file
+python-dotenv~=0.21.0
+
+# generate audio
+elevenlabs~=1.55.0

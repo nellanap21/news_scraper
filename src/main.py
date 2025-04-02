@@ -5,7 +5,8 @@ import scrape_links
 import scrape_articles
 import matcher
 # import summarizer
-# import cleaner
+import cleaner
+import voice_generator
 
 # Code refactor
 import logging  # Built-in Python library
@@ -39,20 +40,28 @@ def main(s3_folder_path):
     # scrape_articles.scrape_cnn_articles(s3_folder_path)
     # logger.info('CNN Articles retrieved')
 
-    # Find matching articles
-    # matches = matcher.find_matches()
+    #Find matching articles
+    # matches = matcher.find_matches(s3_folder_path)
     # if matches is None:
     #     logger.info('No matching articles found')
     # else:
     #     logger.info('Matching articles found')
 
+    # Generate summaries
+    # summaries = summarizer.summarize_articles(s3_folder_path)
+    # if summaries is None:
+    #     logger.info('No summaries generated')
+    # else:
+    #     logger.info('Summaries generated')
+
     # Generate scripts
-    # scripts = summarizer.generate_summary()
-    # if scripts is None:
-    #     logger.info('No scripts generated')
+    # cleaner.clean_scripts(s3_folder_path)
+    # logger.info('Scripts generated')
 
+    # Generate audio
+    voice_generator.generate_audio(s3_folder_path)
+    logger.info('Audio generated')
 
-    # Clean scripts
 
 
 if __name__ == '__main__':

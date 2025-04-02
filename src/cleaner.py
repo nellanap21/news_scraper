@@ -6,14 +6,14 @@ from nltk.tokenize import sent_tokenize
 import re
 import json
 
-def clean_scripts():
+def clean_scripts(s3_folder_path):
 
     # get filepath with data
     today = date.today()
-    filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/summaries.csv')
+    summaries_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/summaries.csv'
 
     # create data frame
-    scripts = pd.read_csv(filepath_or_buffer=filepath)
+    scripts = pd.read_csv(filepath_or_buffer=summaries_filepath)
 
     # remove instances of "Script:"
     for index, row in scripts.iterrows():
@@ -61,8 +61,7 @@ def clean_scripts():
         scripts.at[index, 'script'] = new_script
 
     # create file path
-    scripts_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/scripts.csv')
-    scripts_filepath.parent.mkdir(parents=True, exist_ok=True)
+    scripts_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/scripts.csv'
 
     # store CSV
     scripts.to_csv(path_or_buf=scripts_filepath, index=False)

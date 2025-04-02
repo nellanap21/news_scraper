@@ -96,16 +96,12 @@ def generate_summary(fox_article, cnn_article):
     return completion.choices[0].message
 
 
-def summarize_articles():
+def summarize_articles(s3_folder_path):
     logger = logging.getLogger(__name__)
 
     # create filepaths with data
     today = date.today()
-
-    # for testing purposes
-    # today = datetime.datetime(2025, 3, 28)
-
-    articles_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/articles.csv')
+    articles_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/articles.csv'
 
     # create data frame of articles
     articles = pd.read_csv(filepath_or_buffer=articles_filepath)
@@ -155,8 +151,9 @@ def summarize_articles():
     summaries["script"] = scripts
 
     # create file path
-    summaries_filepath = Path('./data/' + today.strftime("%Y-%m-%d") + '/summaries.csv')
-    summaries_filepath.parent.mkdir(parents=True, exist_ok=True)
+    summaries_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/summaries.csv'
 
-    # stores CSV
+    # stores in S3
     summaries.to_csv(path_or_buf=summaries_filepath, index=False)
+
+    return summaries
