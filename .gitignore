@@ -14,3 +14,6 @@ src/__pycache__/scrape_articles.cpython-312.pyc
 # python cache
 src/__pycache__/
 __pycache__/
+
+# AWS
+AWS.pem

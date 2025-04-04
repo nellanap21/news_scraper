@@ -48,6 +48,6 @@ def generate_audio(s3_folder_path):
         #     file.write(audio)
 
         # saves output.mp3 to s3 bucket
-        audio_filepath = s3_folder_path + '2025-03-31/' + str(index) + '.mp3'
+        audio_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + str(index) + '.mp3'
         s3 = s3fs.S3FileSystem(profile='admin')
         s3.put(lpath='./output.mp3', rpath=audio_filepath, recursive=False)
