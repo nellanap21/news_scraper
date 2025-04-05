@@ -1,5 +1,9 @@
 # ignore pycharm config
 .idea/vcs.xml
+*.idea
+
+# Mac OS finder preferences
+*.DS_Store
 
 # ignore data files
 data/*
