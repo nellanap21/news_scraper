@@ -40,14 +40,22 @@ def generate_audio(s3_folder_path):
             model_id="eleven_multilingual_v2",
         )
 
-        # this saves to local
-        save(audio, 'output.mp3')
+        audio_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + str(index) + '.mp3'
 
-        # for reference: this also saves to local
-        # with open(audio_filepath, "wb") as file:
-        #     file.write(audio)
+
+        # try this to save to S3
+        save(audio, audio_filepath)
+
+
+
+        # also try this to save to S3
+        with open(audio_filepath, "wb") as file:
+            file.write(audio)
 
         # saves output.mp3 to s3 bucket
-        audio_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + str(index) + '.mp3'
-        s3 = s3fs.S3FileSystem(profile='admin')
-        s3.put(lpath='./output.mp3', rpath=audio_filepath, recursive=False)
+        # audio_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + str(index) + '.mp3'
+
+        # you may not need to reference profile='admin' on EC2 because it has access to S3
+        # s3fs did not work
+        # s3 = s3fs.S3FileSystem(profile='admin')
+        # s3.put(lpath='./output.mp3', rpath=audio_filepath, recursive=False)

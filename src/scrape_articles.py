@@ -55,7 +55,10 @@ def parse_fox_page(soup):
 
 
 def remove_all_caps(string):
-    return re.sub(r'\b[A-Z]{2}\w*+\b', '', string)
+    # this doesn't work in EC2 version of python
+    #return re.sub(r'\b[A-Z]{2}\w*+\b', '', string)
+
+    return string
 
 
 def scrape_fox_articles(s3_folder_path):
