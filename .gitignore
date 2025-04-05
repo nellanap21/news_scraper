@@ -1,23 +1,20 @@
 # ignore pycharm config
-.idea/vcs.xml
 *.idea
 
 # Mac OS finder preferences
 *.DS_Store
 
 # ignore data files
-data/*
-
-# ignore pycache files
-src/__pycache__/matcher.cpython-312.pyc
-src/__pycache__/scrape_articles.cpython-312.pyc
+data/
 
 # environmental variables
 .env
 
 # python cache
 src/__pycache__/
-__pycache__/
 
 # AWS
 AWS.pem
+
+# output mp3
+/output.mp3
