@@ -1,21 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from datetime import date  # Built-in Python library
-from pathlib import Path # Built-in Python library
 import s3fs
+from dotenv import load_dotenv
+import os
+import arrow
 
 def request_html(url):
+
+    load_dotenv()
+    oxylabs_user = os.getenv("OXYLABS_USER")
+    oxylabs_pass = os.getenv("OXYLABS_PASSWORD")
+
+    username = oxylabs_user
+    password = oxylabs_pass
+    proxy = "pr.oxylabs.io:7777"
+
+    proxies = {
+        'http': f'http://{username}:{password}@{proxy}',
+        'https': f'http://{username}:{password}@{proxy}'
+    }
+
     headers = { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \
                                AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
                 "Upgrade-Insecure-Requests": "1",
                 "Referer": "https://www.google.com/"}
-    response = requests.get(url, headers = headers)
+
+    response = requests.get(url, headers=headers, proxies=proxies)
+    print(response)
     if response.status_code != 200:
         soup = "error"
+        print("Error with HTTP request")
     else:
         soup = BeautifulSoup(response.content, 'html.parser')
-
     return soup
 
 
@@ -59,8 +76,10 @@ def scrape_fox_links(s3_folder_path):
             article_links.append(link)
 
     # create filepath for CSV
-    today = date.today()
-    filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-links.csv'
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    filepath = s3_folder_path + formatted_date + '/fox-links.csv'
 
     # create data frame
     df = pd.DataFrame(article_links, columns=['url'])
@@ -75,14 +94,14 @@ def scrape_cnn_links(s3_folder_path):
     # make the HTTP request
     soup = request_html(url)
 
-    today = date.today()
-    formatted_date = today.strftime("%Y/%m/%d")
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY/MM/DD')
 
     new_links = []
 
     # find all a tags and loop through them
     for link in soup.find_all('a'):
-
         # get the href attribute of a tag
         href = link.get('href')
 
@@ -104,8 +123,10 @@ def scrape_cnn_links(s3_folder_path):
             article_links.append(link)
 
     # create filepath for CSV
-    today = date.today()
-    filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-links.csv'
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    filepath = s3_folder_path + formatted_date + '/cnn-links.csv'
 
     # create data frame
     df = pd.DataFrame(article_links, columns=['url'])

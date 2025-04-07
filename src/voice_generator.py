@@ -1,11 +1,10 @@
-from datetime import date
 from elevenlabs import ElevenLabs
 from elevenlabs import play, save, stream, Voice, VoiceSettings
-
 import s3fs
 import os
 from dotenv import load_dotenv
 import pandas as pd
+import arrow
 
 
 def generate_audio(s3_folder_path):
@@ -19,8 +18,10 @@ def generate_audio(s3_folder_path):
     )
 
     # get filepath with data
-    today = date.today()
-    scripts_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/scripts.csv'
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    scripts_filepath = s3_folder_path + formatted_date + '/scripts.csv'
 
     # use this line for testing purposes
     # scripts_filepath = s3_folder_path + '2025-03-31' + '/scripts.csv'
@@ -44,7 +45,7 @@ def generate_audio(s3_folder_path):
         save(audio, 'output.mp3')
 
         # create S3 filepath for audio
-        audio_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/' + str(index) + '.mp3'
+        audio_filepath = s3_folder_path + formatted_date + '/' + str(index) + '.mp3'
 
         # use s3fs to save to s3 bucket
         # Note: need to have .aws cli credentials configured with profile admin

@@ -1,11 +1,10 @@
 # import libraries
-import datetime
 import pandas as pd
 import numpy as np
 import logging
-from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+import arrow
 
 def jaccard_similarity(text1, text2):
     """
@@ -59,13 +58,12 @@ def find_matches(s3_folder_path):
     logger = logging.getLogger(__name__)
 
     # create filepaths with data
-    today = datetime.date.today()
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
 
-    # for testing purposes find articles from specific date
-    # today = datetime.datetime(2025, 3, 28)
-
-    cnn_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-data.csv'
-    fox_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-data.csv'
+    cnn_filepath = s3_folder_path + formatted_date + '/cnn-data.csv'
+    fox_filepath = s3_folder_path + formatted_date + '/fox-data.csv'
 
     # load into data frames
     cnn = pd.read_csv(filepath_or_buffer=cnn_filepath)
@@ -139,7 +137,7 @@ def find_matches(s3_folder_path):
     articles = pd.DataFrame(raw_data)
 
     # create file path
-    articles_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/articles.csv'
+    articles_filepath = s3_folder_path + formatted_date + '/articles.csv'
 
     # stores CSV
     articles.to_csv(path_or_buf=articles_filepath, index=False)

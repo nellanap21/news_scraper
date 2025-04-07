@@ -1,6 +1,4 @@
 # Retrieving & Wrangling Data
-from datetime import date  # Built-in Python library
-import s3fs
 import scrape_links
 import scrape_articles
 import matcher

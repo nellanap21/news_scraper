@@ -5,6 +5,7 @@ from datetime import date
 from pathlib import Path
 import re
 import s3fs
+import arrow
 
 def request_html(url):
     headers = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) \
@@ -68,8 +69,11 @@ def scrape_fox_articles(s3_folder_path):
     articles = []
 
     # create df of links
-    today = date.today()
-    links_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-links.csv'
+
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    links_filepath = s3_folder_path + formatted_date + '/fox-links.csv'
     links = pd.read_csv(filepath_or_buffer=links_filepath)
 
     # create a new column called domain from the link
@@ -127,7 +131,7 @@ def scrape_fox_articles(s3_folder_path):
     data.drop("articleCleaned", axis=1, inplace=True)
 
     # create filepath
-    data_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/fox-data.csv'
+    data_filepath = s3_folder_path + formatted_date + '/fox-data.csv'
 
     # save to CSV
     data.to_csv(path_or_buf=data_filepath, index=False)
@@ -161,8 +165,10 @@ def scrape_cnn_articles(s3_folder_path):
     articles = []
 
     # create df of links
-    today = date.today()
-    links_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-links.csv'
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    links_filepath = s3_folder_path + formatted_date + '/cnn-links.csv'
     links = pd.read_csv(filepath_or_buffer=links_filepath)
 
     # create a new column called company from the link
@@ -213,7 +219,7 @@ def scrape_cnn_articles(s3_folder_path):
     data = pd.DataFrame(raw_data)
 
     # create file path
-    data_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/cnn-data.csv'
+    data_filepath = s3_folder_path + formatted_date + '/cnn-data.csv'
 
     # store on S3
     data.to_csv(path_or_buf=data_filepath, index=False)

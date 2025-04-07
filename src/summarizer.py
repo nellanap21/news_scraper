@@ -1,17 +1,13 @@
 # import libraries
-import datetime
-from datetime import date
 import pandas as pd
-import numpy as np
 import logging
-from pathlib import Path
-import re
 import json
 import nltk
 from nltk.tokenize import sent_tokenize
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import arrow
 
 
 
@@ -101,8 +97,10 @@ def summarize_articles(s3_folder_path):
     logger = logging.getLogger(__name__)
 
     # create filepaths with data
-    today = date.today()
-    articles_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/articles.csv'
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    articles_filepath = s3_folder_path + formatted_date + '/articles.csv'
 
     # create data frame of articles
     articles = pd.read_csv(filepath_or_buffer=articles_filepath)
@@ -152,7 +150,7 @@ def summarize_articles(s3_folder_path):
     summaries["script"] = scripts
 
     # create file path
-    summaries_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/summaries.csv'
+    summaries_filepath = s3_folder_path + formatted_date + '/summaries.csv'
 
     # stores in S3
     summaries.to_csv(path_or_buf=summaries_filepath, index=False)

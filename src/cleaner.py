@@ -1,16 +1,18 @@
 from datetime import date
 import pandas as pd
-from pathlib import Path
 import nltk
 from nltk.tokenize import sent_tokenize
 import re
 import json
+import arrow
 
 def clean_scripts(s3_folder_path):
 
     # get filepath with data
-    today = date.today()
-    summaries_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/summaries.csv'
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    summaries_filepath = s3_folder_path + formatted_date + '/summaries.csv'
 
     # create data frame
     scripts = pd.read_csv(filepath_or_buffer=summaries_filepath)
@@ -61,7 +63,7 @@ def clean_scripts(s3_folder_path):
         scripts.at[index, 'script'] = new_script
 
     # create file path
-    scripts_filepath = s3_folder_path + today.strftime("%Y-%m-%d") + '/scripts.csv'
+    scripts_filepath = s3_folder_path + formatted_date + '/scripts.csv'
 
     # store CSV
     scripts.to_csv(path_or_buf=scripts_filepath, index=False)
