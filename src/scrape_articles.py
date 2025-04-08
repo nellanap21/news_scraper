@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-from datetime import date
-from pathlib import Path
 import re
 import s3fs
 import arrow
