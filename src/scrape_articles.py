@@ -113,9 +113,10 @@ def scrape_fox_articles(s3_folder_path):
             print("URL is not from Fox or CNN", url)
             continue
 
-        companies.append(company)
-        headlines.append(headline)
-        articles.append(content)
+        if content is not None:
+            companies.append(company)
+            headlines.append(headline)
+            articles.append(content)
 
     # create dictionary of equal length lists
     raw_data = {"company": companies, "headline": headlines, "article": articles}
@@ -127,6 +128,9 @@ def scrape_fox_articles(s3_folder_path):
     data.loc[:, "articleCleaned"] = data["article"].apply(remove_all_caps)
     data.loc[:, "article"] = data["articleCleaned"]
     data.drop("articleCleaned", axis=1, inplace=True)
+
+    # drop any rows that have NA fields
+    data.dropna(inplace=True)
 
     # create filepath
     data_filepath = s3_folder_path + formatted_date + '/fox-data.csv'
@@ -206,15 +210,19 @@ def scrape_cnn_articles(s3_folder_path):
             print("URL is not from Fox or CNN", url)
             continue
 
-        companies.append(company)
-        headlines.append(headline)
-        articles.append(content)
+        if content is not None:
+            companies.append(company)
+            headlines.append(headline)
+            articles.append(content)
 
     # create dictionary of equal length lists
     raw_data = {"company": companies, "headline": headlines, "article": articles}
 
     # create dataframe
     data = pd.DataFrame(raw_data)
+
+    # drop any rows that have NA fields
+    data.dropna(inplace=True)
 
     # create file path
     data_filepath = s3_folder_path + formatted_date + '/cnn-data.csv'
