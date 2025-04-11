@@ -88,7 +88,8 @@ def find_matches(s3_folder_path):
             if similarity > 0.15:
                 jac_matches.append(tuple([i, j]))
 
-    logger.info(jac_matches)
+    logger.info("Jaccard matches: %t", jac_matches)
+
     # Create a matrix to hold cosine similarity scores
     cos_matrix = pd.DataFrame(np.empty((len(fox_headlines), len(cnn_headlines))))
 
@@ -103,13 +104,12 @@ def find_matches(s3_folder_path):
             if similarity > 0.25:
                 cos_matches.append(tuple([i, j]))
 
-    logger.info(cos_matches)
+    logger.info("cosine matches: %t", cos_matches)
     # First find unique tuples from both Jaccard and Cosine similarity
     unique_set = set(jac_matches + cos_matches)
 
     # convert back to list
     unique_matches = list(unique_set)
-    unique_matches.append((6,1))
     logger.info(unique_matches)
 
     # check if no matches found

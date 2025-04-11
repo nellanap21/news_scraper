@@ -34,31 +34,40 @@ def main(s3_folder_path):
     scrape_articles.scrape_cnn_articles(s3_folder_path)
     logger.info('CNN Articles retrieved')
 
+    scripts = create_comparison(s3_folder_path)
+    if scripts is None:
+        logger.info('No comparison scripts generated')
+    else:
+        logger.info('Comparison scripts generated')
+
+def create_comparison(s3_folder_path):
+
+    # Start logging
+    logger = logging.getLogger(__name__)
+
     # NOTE: usually need to manually identify matches here.
     # TODO: need to improve algorithm to find matches
     #Find matching articles
     matches = matcher.find_matches(s3_folder_path)
     if matches is None:
         logger.info('No matching articles found')
-    else:
-        logger.info('Matching articles found')
+        return None
 
     # Generate summaries
     summaries = summarizer.summarize_articles(s3_folder_path)
     if summaries is None:
         logger.info('No summaries generated')
-    else:
-        logger.info('Summaries generated')
+        return None
 
     # Generate scripts
     cleaner.clean_scripts(s3_folder_path)
-    logger.info('Scripts generated')
+    logger.info('Scripts cleaned')
 
     # Generate audio
     voice_generator.generate_audio(s3_folder_path)
     logger.info('Audio generated')
 
-
+    return 1
 
 if __name__ == '__main__':
     # Define the required arguments
