@@ -32,11 +32,14 @@ def summarize_articles(s3_folder_path):
 
     # iterate through data frame and generate a summary for each article
     for row in cnn_articles.itertuples():
+        logger.info(row.combined)
         result = generate_summary(row.combined)
         short_summary.append(result.content)
+    logger.info(short_summary)
 
     # create new column in data frame
     cnn_articles['short_summary'] = short_summary
+    logger.info(cnn_articles)
 
     # create file path
     summaries_filepath = s3_folder_path + formatted_date + '/cnn_summaries.csv'
@@ -47,6 +50,9 @@ def summarize_articles(s3_folder_path):
     return cnn_articles
 
 def generate_summary(article):
+
+    # setup logging
+    logger = logging.getLogger(__name__)
 
     # load environmental variables
     load_dotenv()
@@ -94,4 +100,5 @@ def generate_summary(article):
             ]
         }
     ])
+    logger.info(completion.choices[0].message)
     return completion.choices[0].message

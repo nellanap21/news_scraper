@@ -67,3 +67,39 @@ def clean_scripts(s3_folder_path):
 
     # store CSV
     scripts.to_csv(path_or_buf=scripts_filepath, index=False)
+
+def clean_cnn_summaries(s3_folder_path):
+
+    # get filepath with data
+    utc = arrow.utcnow()
+    local = utc.to('US/Pacific')
+    formatted_date = local.format('YYYY-MM-DD')
+    summaries_filepath = s3_folder_path + formatted_date + '/cnn_summaries.csv'
+
+    # create data frame
+    summaries = pd.read_csv(summaries_filepath)
+
+    # create string to store script
+    script = ""
+    script = "Here are today's CNN headlines, with a two sentence summary of each article. "
+
+    # add summary of each article to script
+    for index, row in summaries.iterrows():
+        text = row.short_summary
+        print(text)
+        script = script + str(index + 1) + ". " + row.short_summary + "  "
+
+    # create list to hold script
+    scripts_list = []
+    scripts_list.append(script)
+
+    # setup dictionary to create new data frame
+    raw_data = {"script": scripts_list}
+    scripts = pd.DataFrame(raw_data)
+
+    # create file path
+    scripts_filepath = s3_folder_path + formatted_date + '/cnn_summaries_script.csv'
+
+    # store CSV
+    scripts.to_csv(path_or_buf=scripts_filepath, index=False)
+

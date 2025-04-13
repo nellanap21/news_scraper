@@ -19,6 +19,19 @@ def main(s3_folder_path):
     # Start logging
     logger = logging.getLogger(__name__)
 
+    # scrape CNN and Fox articles
+    # scrape(s3_folder_path)
+
+    # create comparison script mp3
+    # create_comparison(s3_folder_path)
+
+    # create cnn short summary mp3
+    create_short_summary(s3_folder_path)
+
+def scrape(s3_folder_path):
+    # Start logging
+    logger = logging.getLogger(__name__)
+
     # Scrape Fox links
     scrape_links.scrape_fox_links(s3_folder_path)
     logger.info('Fox Links retrieved')
@@ -34,16 +47,6 @@ def main(s3_folder_path):
     # Scrape CNN articles
     scrape_articles.scrape_cnn_articles(s3_folder_path)
     logger.info('CNN Articles retrieved')
-
-    # create comparison script mp3
-    scripts = create_comparison(s3_folder_path)
-    if scripts is None:
-        logger.info('No comparison scripts generated')
-    else:
-        logger.info('Comparison scripts generated')
-
-    # create cnn short summary mp3
-    create_short_summary(s3_folder_path)
 
 
 def create_comparison(s3_folder_path):
@@ -86,6 +89,9 @@ def create_short_summary(s3_folder_path):
     if summaries is None:
         logger.info('No summaries generated')
         return None
+
+    # convert summaries into script
+    cleaner.clean_cnn_summaries(s3_folder_path)
 
     return 1
 
