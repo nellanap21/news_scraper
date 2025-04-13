@@ -5,6 +5,7 @@ import matcher
 import summarizer
 import cleaner
 import voice_generator
+import summarizer_cnn
 
 # Code refactor
 import logging  # Built-in Python library
@@ -34,11 +35,16 @@ def main(s3_folder_path):
     scrape_articles.scrape_cnn_articles(s3_folder_path)
     logger.info('CNN Articles retrieved')
 
+    # create comparison script mp3
     scripts = create_comparison(s3_folder_path)
     if scripts is None:
         logger.info('No comparison scripts generated')
     else:
         logger.info('Comparison scripts generated')
+
+    # create cnn short summary mp3
+    create_short_summary(s3_folder_path)
+
 
 def create_comparison(s3_folder_path):
 
@@ -66,6 +72,20 @@ def create_comparison(s3_folder_path):
     # Generate audio
     voice_generator.generate_audio(s3_folder_path)
     logger.info('Audio generated')
+
+    return 1
+
+
+def create_short_summary(s3_folder_path):
+
+    # Start logging
+    logger = logging.getLogger(__name__)
+
+    # Generate summaries
+    summaries = summarizer_cnn.summarize_articles(s3_folder_path)
+    if summaries is None:
+        logger.info('No summaries generated')
+        return None
 
     return 1
 
