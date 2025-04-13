@@ -20,13 +20,16 @@ def main(s3_folder_path):
     logger = logging.getLogger(__name__)
 
     # scrape CNN and Fox articles
-    # scrape(s3_folder_path)
+    scrape(s3_folder_path)
 
     # create comparison script mp3
     # create_comparison(s3_folder_path)
 
-    # create cnn short summary mp3
-    create_short_summary(s3_folder_path)
+    # create short summary cnn mp3
+    create_short_summary_cnn(s3_folder_path)
+
+    # create short summary fox mp3
+    create_short_summary_fox(s3_folder_path)
 
 def scrape(s3_folder_path):
     # Start logging
@@ -79,7 +82,7 @@ def create_comparison(s3_folder_path):
     return 1
 
 
-def create_short_summary(s3_folder_path):
+def create_short_summary_cnn(s3_folder_path):
 
     # Start logging
     logger = logging.getLogger(__name__)
@@ -91,7 +94,38 @@ def create_short_summary(s3_folder_path):
         return None
 
     # convert summaries into script
-    cleaner.clean_cnn_summaries(s3_folder_path)
+    script = cleaner.clean_cnn_summaries(s3_folder_path)
+    if script is None:
+        logger.info('No CNN script generated')
+        return None
+    logger.info('CNN script created')
+
+    # generate mp3
+    voice_generator.generate_audio_cnn(s3_folder_path)
+    logger.info('CNN audio generated')
+
+    return 1
+
+def create_short_summary_fox(s3_folder_path):
+
+    # Start logging
+    logger = logging.getLogger(__name__)
+
+    # Generate summaries
+    summaries = summarizer_fox.summarize_articles(s3_folder_path)
+    if summaries is None:
+        logger.info('No summaries generated')
+        return None
+
+    # convert summaries into script
+    script = cleaner.clean_fox_summaries(s3_folder_path)
+    if script is None:
+        logger.info('No Fox script generated')
+        return None
+    logger.info('Fox script created')
+
+    # generate mp3
+    voice_generator.generate_audio_fox(s3_folder_path)
 
     return 1
 
