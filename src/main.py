@@ -6,6 +6,7 @@ import summarizer
 import cleaner
 import voice_generator
 import summarizer_cnn
+import summarizer_fox
 
 # Code refactor
 import logging  # Built-in Python library

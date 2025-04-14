@@ -87,7 +87,7 @@ def generate_audio_cnn(s3_folder_path):
         save(audio, 'output.mp3')
 
         # create S3 filepath for audio
-        audio_filepath = s3_folder_path + formatted_date + '/' + str(index) + 'summary_cnn.mp3'
+        audio_filepath = s3_folder_path + formatted_date + '/' + 'summary_cnn.mp3'
 
         # use s3fs to save to s3 bucket
         # Note: need to have .aws cli credentials configured with profile admin
@@ -130,7 +130,7 @@ def generate_audio_fox(s3_folder_path):
         save(audio, 'output.mp3')
 
         # create S3 filepath for audio
-        audio_filepath = s3_folder_path + formatted_date + '/' + str(index) + 'summary_fox.mp3'
+        audio_filepath = s3_folder_path + formatted_date + '/' + 'summary_fox.mp3'
 
         # use s3fs to save to s3 bucket
         # Note: need to have .aws cli credentials configured with profile admin
