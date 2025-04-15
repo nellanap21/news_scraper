@@ -113,7 +113,10 @@ def scrape_fox_articles(s3_folder_path):
             print("URL is not from Fox or CNN", url)
             continue
 
-        if content is not None:
+        # check for empy article content
+        if content is None or content == "":
+            continue
+        else:
             companies.append(company)
             headlines.append(headline)
             articles.append(content)

@@ -33,11 +33,11 @@ def summarize_articles(s3_folder_path):
         logger.info(row.combined)
         result = generate_summary(row.combined)
         short_summary.append(result.content)
-    logger.info(short_summary)
+    logger.info('list of short_summaries created')
 
     # create new column in data frame
     fox_articles['short_summary'] = short_summary
-    logger.info(fox_articles)
+    logger.info('short summaries saved to data frame')
 
     # create file path
     summaries_filepath = s3_folder_path + formatted_date + '/fox_summaries.csv'
