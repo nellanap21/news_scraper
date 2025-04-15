@@ -86,7 +86,10 @@ def clean_cnn_summaries(s3_folder_path):
     # add summary of each article to script
     for index, row in summaries.iterrows():
         text = row.short_summary
-        print(text)
+        # if next summary increases length of script to more than 5000
+        # characters, then stop adding script (ElevenLabs limit)
+        if len(script) + len(text) > 5000:
+            break
         script = script + str(index + 1) + ". " + row.short_summary + "  "
 
     # create list to hold script
@@ -123,7 +126,10 @@ def clean_fox_summaries(s3_folder_path):
     # add summary of each article to script
     for index, row in summaries.iterrows():
         text = row.short_summary
-        print(text)
+        # if next summary increases length of script to more than 5000
+        # characters, then stop adding script (ElevenLabs limit)
+        if len(script) + len(text) > 5000:
+            break
         script = script + str(index + 1) + ". " + row.short_summary + "  "
 
     # create list to hold script

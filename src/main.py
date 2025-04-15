@@ -127,6 +127,7 @@ def create_short_summary_fox(s3_folder_path):
 
     # generate mp3
     voice_generator.generate_audio_fox(s3_folder_path)
+    logger.info('Fox audio generated')
 
     return 1
 
