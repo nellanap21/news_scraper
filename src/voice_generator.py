@@ -74,7 +74,7 @@ def generate_audio_cnn(s3_folder_path):
     # remove instances of "Script"
     for index, row in scripts.iterrows():
         script = scripts.at[index, 'script']
-        print(script)
+        print("generate_audio_cnn: got script")
 
         audio = client.text_to_speech.convert(
             voice_id="AVZoXJVV8SEUYYOn6s00",
@@ -85,15 +85,17 @@ def generate_audio_cnn(s3_folder_path):
 
         # save locally to EC2
         save(audio, 'output.mp3')
+        print("generate_audio_cnn: saved audio locally")
 
         # create S3 filepath for audio
         audio_filepath = s3_folder_path + formatted_date + '/' + 'summary_cnn.mp3'
+        print("generate_audio_cnn: created audio filepath", audio_filepath)
 
         # use s3fs to save to s3 bucket
         # Note: need to have .aws cli credentials configured with profile admin
         s3 = s3fs.S3FileSystem(profile='admin')
         s3.put(lpath='./output.mp3', rpath=audio_filepath, recursive=False)
-
+        print("generate_audio_cnn: saved audio to s3")
 
 def generate_audio_fox(s3_folder_path):
 
@@ -117,7 +119,7 @@ def generate_audio_fox(s3_folder_path):
     # remove instances of "Script"
     for index, row in scripts.iterrows():
         script = scripts.at[index, 'script']
-        print(script)
+        print("generate_audio_fox: got script")
 
         audio = client.text_to_speech.convert(
             voice_id="AVZoXJVV8SEUYYOn6s00",
@@ -127,12 +129,15 @@ def generate_audio_fox(s3_folder_path):
         )
 
         # save locally to EC2
-        save(audio, 'output.mp3')
+        save(audio, 'fox_output.mp3')
+        print("generate_audio_fox: saved audio locally")
 
         # create S3 filepath for audio
         audio_filepath = s3_folder_path + formatted_date + '/' + 'summary_fox.mp3'
+        print("generate_audio_fox: created audio filepath", audio_filepath)
 
         # use s3fs to save to s3 bucket
         # Note: need to have .aws cli credentials configured with profile admin
         s3 = s3fs.S3FileSystem(profile='admin')
-        s3.put(lpath='./output.mp3', rpath=audio_filepath, recursive=False)
+        s3.put(lpath='./fox_output.mp3', rpath=audio_filepath, recursive=False)
+        print("generate_audio_fox: saved audio to s3")
