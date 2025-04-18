@@ -83,6 +83,10 @@ def generate_audio_cnn(s3_folder_path):
             model_id="eleven_multilingual_v2",
         )
 
+        # if old mp3 exists, delete it
+        if os.path.exists('output.mp3'):
+            os.remove('output.mp3')
+
         # save locally to EC2
         save(audio, 'output.mp3')
         print("generate_audio_cnn: saved audio locally")
@@ -128,8 +132,12 @@ def generate_audio_fox(s3_folder_path):
             model_id="eleven_multilingual_v2",
         )
 
+        # if old mp3 exists, delete it
+        if os.path.exists('output.mp3'):
+            os.remove('output.mp3')
+
         # save locally to EC2
-        save(audio, 'fox_output.mp3')
+        save(audio, 'output.mp3')
         print("generate_audio_fox: saved audio locally")
 
         # create S3 filepath for audio
@@ -139,5 +147,5 @@ def generate_audio_fox(s3_folder_path):
         # use s3fs to save to s3 bucket
         # Note: need to have .aws cli credentials configured with profile admin
         s3 = s3fs.S3FileSystem(profile='admin')
-        s3.put(lpath='./fox_output.mp3', rpath=audio_filepath, recursive=False)
+        s3.put(lpath='./output.mp3', rpath=audio_filepath, recursive=False)
         print("generate_audio_fox: saved audio to s3")
