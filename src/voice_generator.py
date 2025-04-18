@@ -60,6 +60,7 @@ def generate_audio_cnn(s3_folder_path):
 
     client = ElevenLabs(
         api_key=api_key,
+        timeout=300
     )
 
     # get filepath with data
@@ -109,6 +110,7 @@ def generate_audio_fox(s3_folder_path):
 
     client = ElevenLabs(
         api_key=api_key,
+        timeout=300
     )
 
     # get filepath with data
